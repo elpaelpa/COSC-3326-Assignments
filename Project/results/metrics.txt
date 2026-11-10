@@ -1,0 +1,11 @@
+Test accuracy: 0.9899
+Test ROC AUC:  0.9994
+
+              precision    recall  f1-score   support
+
+        real       0.98      0.98      0.98       718
+        fake       0.99      0.99      0.99      1562
+
+    accuracy                           0.99      2280
+   macro avg       0.99      0.99      0.99      2280
+weighted avg       0.99      0.99      0.99      2280

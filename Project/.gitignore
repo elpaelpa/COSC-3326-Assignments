@@ -1,0 +1,11 @@
+# Python
+.venv/
+__pycache__/
+
+# Downloaded dataset
+data/
+zips/
+
+# Trained model weights
+models/
+*.pt
