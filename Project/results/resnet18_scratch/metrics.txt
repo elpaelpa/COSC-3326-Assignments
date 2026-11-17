@@ -1,0 +1,16 @@
+Test set: 2280 faces
+
+Model                                   Accuracy  ROC AUC
+Majority class (always fake)              0.6851   0.5000
+ResNet-18 from scratch (this run)         0.9715   0.9954
+ResNet-18 pretrained (main notebook)      0.9899   0.9994
+
+From-scratch classification report:
+              precision    recall  f1-score   support
+
+        real       0.94      0.97      0.96       718
+        fake       0.99      0.97      0.98      1562
+
+    accuracy                           0.97      2280
+   macro avg       0.96      0.97      0.97      2280
+weighted avg       0.97      0.97      0.97      2280
