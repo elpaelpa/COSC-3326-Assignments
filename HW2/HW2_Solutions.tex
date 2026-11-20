@@ -1,0 +1,132 @@
+% Template last modified by Jake Hart; please contact course staff if you have any questions regarding using this template
+
+\documentclass{cisXXX} % You must have the cisXXX .cls file in your project or working directory (i.e. the same directory as this document)
+
+\HWauthor{Michael Cortez, Francisco Tejeda-Villarreal, Xavier Cristan, Raphael Pangilinan}{} % Group members
+\HWno{2} % Enter the number of the homework you are working on
+\HWcourse{COSC 3326} % Enter the course department and number here
+% \HWpartner{Paul Brown} % If your class allows group work, put your partners here
+% \HWpartner{Amelia Earhart} % Otherwise, delete or comment these lines
+\usepackage{amsmath}
+
+\begin{document}
+\maketitle
+% \section{}
+\HWproblem
+With image $\mathbf{I}$ and kernel $\mathbf{K}$:
+$$\mathbf{I} = \begin{bmatrix}
+    4 & 12 & 3 & 4\\
+    2 & 2 & 3 & 5 \\
+    17 & 6 & 23 & 17 \\
+    24 & 7 & 11 & 14
+\end{bmatrix}
+\qquad
+\mathbf{K} = \begin{bmatrix}
+    -1 & 2 \\
+     5 & 4
+\end{bmatrix}$$
+
+The dimensions of the resulting output matrix is determined by:
+$$ (I_x- K_x + 1) \times (I_y - K_y + 1) = (4-2+1)  \times (4-2+1) = 3 \times 3  $$
+
+The output matrix $$\mathbf{O} = \begin{bmatrix}
+    O_{11}&O_{12}&O_{13}\\
+    O_{21}&O_{22}&O_{23}\\
+    O_{31}&O_{32}&O_{33}\\
+\end{bmatrix} = \begin{bmatrix}
+    38 & 16 & 40 \\
+    111 & 126 & 190 \\
+    143 & 119 & 122
+\end{bmatrix}$$
+
+Each entry is computed by sliding $\mathbf{K}$ over $\mathbf{I}$ with stride 1 and taking the sum of the element-wise products of $\mathbf{K}$ with the $2 \times 2$ window it covers:
+$$O_{ij} = \sum_{m=1}^{2}\sum_{n=1}^{2} I_{i+m-1,\, j+n-1}\, K_{mn}$$
+
+\begin{align*}
+O_{11} &= (4)(-1) + (12)(2) + (2)(5) + (2)(4) = -4 + 24 + 10 + 8 = 38 \\
+O_{12} &= (12)(-1) + (3)(2) + (2)(5) + (3)(4) = -12 + 6 + 10 + 12 = 16 \\
+O_{13} &= (3)(-1) + (4)(2) + (3)(5) + (5)(4) = -3 + 8 + 15 + 20 = 40 \\
+O_{21} &= (2)(-1) + (2)(2) + (17)(5) + (6)(4) = -2 + 4 + 85 + 24 = 111 \\
+O_{22} &= (2)(-1) + (3)(2) + (6)(5) + (23)(4) = -2 + 6 + 30 + 92 = 126 \\
+O_{23} &= (3)(-1) + (5)(2) + (23)(5) + (17)(4) = -3 + 10 + 115 + 68 = 190 \\
+O_{31} &= (17)(-1) + (6)(2) + (24)(5) + (7)(4) = -17 + 12 + 120 + 28 = 143 \\
+O_{32} &= (6)(-1) + (23)(2) + (7)(5) + (11)(4) = -6 + 46 + 35 + 44 = 119 \\
+O_{33} &= (23)(-1) + (17)(2) + (11)(5) + (14)(4) = -23 + 34 + 55 + 56 = 122
+\end{align*}
+
+\HWproblem
+With input $\mathbf{X}$ and kernel $\mathbf{K}$:
+$$\mathbf{X} = \begin{bmatrix}
+    0 & 2 \\
+    2 & 1
+\end{bmatrix}
+\qquad
+\mathbf{K} = \begin{bmatrix}
+    1 & 2 \\
+    3 & 1
+\end{bmatrix}$$
+
+In a transposed convolution, each input element $X_{ab}$ multiplies the whole kernel $\mathbf{K}$, and the result is added into the output starting at position $\big((a-1)s+1,\ (b-1)s+1\big)$, where $s$ is the stride. Each output element is therefore the sum of every product $X_{ab}K_{mn}$ that lands on it:
+$$Y_{ij} = \sum_{a=1}^{2}\sum_{b=1}^{2} X_{ab}\, K_{i-(a-1)s,\; j-(b-1)s}$$
+where only the terms with a valid kernel index ($1 \le m, n \le 2$) are included.
+
+\HWsubproblem
+\textbf{Stride of 1, no padding.}
+
+The dimensions of the resulting output matrix is determined by:
+$$ \big((X_x - 1)s + K_x\big) \times \big((X_y - 1)s + K_y\big) = \big((2-1)(1)+2\big) \times \big((2-1)(1)+2\big) = 3 \times 3 $$
+
+The output matrix $$\mathbf{Y} = \begin{bmatrix}
+    Y_{11}&Y_{12}&Y_{13}\\
+    Y_{21}&Y_{22}&Y_{23}\\
+    Y_{31}&Y_{32}&Y_{33}\\
+\end{bmatrix} = \begin{bmatrix}
+    0 & 2 & 4 \\
+    2 & 11 & 4 \\
+    6 & 5 & 1
+\end{bmatrix}$$
+
+\begin{align*}
+Y_{11} &= X_{11}K_{11} = (0)(1) = 0 \\
+Y_{12} &= X_{11}K_{12} + X_{12}K_{11} = (0)(2) + (2)(1) = 0 + 2 = 2 \\
+Y_{13} &= X_{12}K_{12} = (2)(2) = 4 \\
+Y_{21} &= X_{11}K_{21} + X_{21}K_{11} = (0)(3) + (2)(1) = 0 + 2 = 2 \\
+Y_{22} &= X_{11}K_{22} + X_{12}K_{21} + X_{21}K_{12} + X_{22}K_{11} \\
+       &= (0)(1) + (2)(3) + (2)(2) + (1)(1) = 0 + 6 + 4 + 1 = 11 \\
+Y_{23} &= X_{12}K_{22} + X_{22}K_{12} = (2)(1) + (1)(2) = 2 + 2 = 4 \\
+Y_{31} &= X_{21}K_{21} = (2)(3) = 6 \\
+Y_{32} &= X_{21}K_{22} + X_{22}K_{21} = (2)(1) + (1)(3) = 2 + 3 = 5 \\
+Y_{33} &= X_{22}K_{22} = (1)(1) = 1
+\end{align*}
+
+\HWsubproblem
+\textbf{Stride of 2, no padding.}
+
+The dimensions of the resulting output matrix is determined by:
+$$ \big((X_x - 1)s + K_x\big) \times \big((X_y - 1)s + K_y\big) = \big((2-1)(2)+2\big) \times \big((2-1)(2)+2\big) = 4 \times 4 $$
+
+The output matrix $$\mathbf{Y} = \begin{bmatrix}
+    Y_{11}&Y_{12}&Y_{13}&Y_{14}\\
+    Y_{21}&Y_{22}&Y_{23}&Y_{24}\\
+    Y_{31}&Y_{32}&Y_{33}&Y_{34}\\
+    Y_{41}&Y_{42}&Y_{43}&Y_{44}\\
+\end{bmatrix} = \begin{bmatrix}
+    0 & 0 & 2 & 4 \\
+    0 & 0 & 6 & 2 \\
+    2 & 4 & 1 & 2 \\
+    6 & 2 & 3 & 1
+\end{bmatrix}$$
+
+Since the stride equals the kernel size, the placed kernels do not overlap, so each output element is a single product:
+\begin{align*}
+Y_{11} &= X_{11}K_{11} = (0)(1) = 0 & Y_{12} &= X_{11}K_{12} = (0)(2) = 0 \\
+Y_{13} &= X_{12}K_{11} = (2)(1) = 2 & Y_{14} &= X_{12}K_{12} = (2)(2) = 4 \\
+Y_{21} &= X_{11}K_{21} = (0)(3) = 0 & Y_{22} &= X_{11}K_{22} = (0)(1) = 0 \\
+Y_{23} &= X_{12}K_{21} = (2)(3) = 6 & Y_{24} &= X_{12}K_{22} = (2)(1) = 2 \\
+Y_{31} &= X_{21}K_{11} = (2)(1) = 2 & Y_{32} &= X_{21}K_{12} = (2)(2) = 4 \\
+Y_{33} &= X_{22}K_{11} = (1)(1) = 1 & Y_{34} &= X_{22}K_{12} = (1)(2) = 2 \\
+Y_{41} &= X_{21}K_{21} = (2)(3) = 6 & Y_{42} &= X_{21}K_{22} = (2)(1) = 2 \\
+Y_{43} &= X_{22}K_{21} = (1)(3) = 3 & Y_{44} &= X_{22}K_{22} = (1)(1) = 1
+\end{align*}
+
+\end{document}
